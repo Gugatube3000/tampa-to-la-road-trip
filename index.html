@@ -22,15 +22,15 @@
 <body>
 <main class="app">
   <aside class="panel">
-    <div class="eyebrow">Two friends · one westbound car</div>
+    <div class="eyebrow">You + Pietro · Pietro’s Jeep · westbound</div>
     <h1>Tampa to Los Angeles</h1>
     <div class="subtitle">July 9–17, 2026 · Flight home July 18</div>
     <div class="route-picker" id="routePicker"></div>
-    <div class="stats"><div class="stat"><b id="miles">—</b><span>road miles</span></div><div class="stat"><b id="hours">—</b><span>drive time</span></div><div class="stat"><b id="nights">8</b><span>nights</span></div><div class="stat total"><b>$3–5.6k</b><span>2 people</span></div></div>
+    <div class="stats"><div class="stat"><b id="miles">—</b><span>road miles</span></div><div class="stat"><b id="hours">—</b><span>drive time</span></div><div class="stat"><b id="nights">8</b><span>nights</span></div><div class="stat total"><b>$1.8–3.6k</b><span>you + Pietro</span></div></div>
     <div class="notice" id="notice"></div>
     <div class="legend"><span><i class="dot" style="background:#d45d32"></i>Overnight</span><span><i class="dot" style="background:#e6aa45"></i>Optional detour</span><span>Click any stop for details</span></div>
     <section class="days" id="days"></section>
-    <div class="tip"><b>Budget assumption:</b> $3,000–$5,600 total for two people, including roughly $430–$600 fuel, $800–$1,400 lodging, $650–$1,100 food, $350–$1,100 activities and $700–$1,400 for a one-way rental car. Your LA→TPA flights are excluded. Rates, taxes, deposits and resort fees can change; click through before paying.</div>
+    <div class="tip"><b>Budget assumption:</b> $1,800–$3,600 total for you and Pietro, including roughly $800–$1,400 lodging, $650–$1,100 food and $350–$1,100 activities. Pietro is driving his Jeep and dropping it in Los Angeles, so rental-car and fuel costs are deliberately excluded. Your LA→TPA flights are also excluded. Rates, taxes, deposits and resort fees can change; click through before paying.</div>
   </aside>
   <section class="map-wrap"><div class="map-title" id="mapTitle">Balanced adventure</div><div id="map"></div></section>
 </main>
@@ -156,39 +156,39 @@ const golfStops=[
  {name:'Coronado Golf Course',lat:33.4738,lon:-111.9118,where:'Scottsdale, Arizona',cost:'about $40–100 for two before rentals',fit:'Affordable public executive nine and lighted range—but far south of your current route.',plan:'Only choose this if you deliberately reroute Monument Valley → Scottsdale and drop the Area 51 day. The nine is quick and the range stays open late.',url:'https://www.coronadogolfscottsdale.com/'}
 ];
 const costs={
- 'Leave Tampa':['$115–170','Fuel to Lexington plus road meals for two'],
+ 'Leave Tampa':['$20–45','Road breakfast and lunch for you and Pietro; fuel excluded'],
  'Lexington overnight':['$95–155','Room, taxes and a simple dinner'],
  'Keeneland Race Course':['$0–25','Grounds/workouts are free; breakfast extra'],
  'Buffalo Trace Distillery':['$0–80','Tour and tasting are complimentary; bottle purchases optional'],
  'Old Frankfort Pike scenic drive':['$25–45','Lunch for two; scenic drive is free'],
  'Raven Run Nature Sanctuary':['Free','No admission; bring your own water'],
- 'Drive to Memphis':['$55–80','Estimated fuel for this leg'],
+ 'Drive to Memphis':['$20–40','Road snacks or dinner only; Jeep fuel excluded'],
  'Memphis overnight':['$110–185','Budget room, taxes, parking and a modest meal'],
- 'Memphis → Fort Worth':['$75–110','Fuel and road food'],
+ 'Memphis → Fort Worth':['$20–45','Road food only; Jeep fuel excluded'],
  'Fort Worth Stockyards':['$160–330','Budget motel, dinner and rodeo/live-event allowance for two'],
- 'Fort Worth → Amarillo':['$45–65','Estimated fuel'],
+ 'Fort Worth → Amarillo':['$15–35','Coffee and road food only; Jeep fuel excluded'],
  'Cadillac Ranch':['Free–$10','Free entry; optional spray paint'],
  'Amarillo overnight':['$125–220','Room, taxes and dinner for two'],
- 'Amarillo → Tucumcari':['$25–35','Estimated fuel'],
+ 'Amarillo → Tucumcari':['$0–20','Optional coffee/snacks; Jeep fuel excluded'],
  'Tucumcari Route 66':['$25–50','Lunch and optional souvenirs'],
  'Santa Fe Plaza':['$170–310','Budget motel, taxes, dinner and parking'],
- 'Santa Fe → Shiprock':['$40–60','Estimated fuel plus coffee'],
+ 'Santa Fe → Shiprock':['$0–20','Optional coffee/snacks; Jeep fuel excluded'],
  'Shiprock roadside viewpoint':['Free','Public-road photo stop only'],
  'Monument Valley':['$145–245','San Juan Inn estimate plus roughly $20 tribal entry for two'],
  'Monument Valley horseback ride':['$180–340','Estimated guided ride for two; confirm operator price'],
- 'Monument Valley → Page':['$20–35','Estimated fuel'],
+ 'Monument Valley → Page':['$0–20','Optional snacks; Jeep fuel excluded'],
  'Horseshoe Bend':['$10','2026 passenger-vehicle parking fee'],
  'Las Vegas overnight':['$110–240','Room, resort fees, parking and dinner'],
- 'Las Vegas → Alamo':['$55–80','Fuel for most of the Area 51 loop'],
+ 'Las Vegas → Alamo':['$10–30','Water and road snacks; Jeep fuel excluded'],
  'E.T. Fresh Jerky':['$10–40','Snacks and souvenirs'],
  'Alien Research Center':['Free–$50','Free stop; souvenirs optional'],
  'Black Mailbox':['Free','Public roadside stop'],
  'Little A’Le’Inn, Rachel':['$30–60','Lunch for two and small souvenirs'],
- 'Return to Las Vegas':['$20–35','Remaining loop fuel'],
+ 'Return to Las Vegas':['$0–15','Optional road snacks; Jeep fuel excluded'],
  'Las Vegas evening':['$80–450','Dinner plus anything from Fremont Street to a paid show'],
  'Seven Magic Mountains':['Free','Public art stop'],
  'Calico Ghost Town':['$20–45','Estimated admission for two plus snacks'],
- 'Santa Monica Pier / Los Angeles':['$170–310','LAX-area room, taxes, fuel, parking and dinner']
+ 'Santa Monica Pier / Los Angeles':['$150–280','LAX-area room, taxes, parking and dinner; Jeep fuel excluded']
 };
 const map=L.map('map',{zoomControl:false}).setView([34.3,-101],5); L.control.zoom({position:'bottomright'}).addTo(map);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap contributors'}).addTo(map);
