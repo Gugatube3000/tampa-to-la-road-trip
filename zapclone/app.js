@@ -127,19 +127,58 @@ const MEDIA = {
 };
 const mediaURL = (key) => `data:image/svg+xml,${encodeURIComponent((MEDIA[key] || MEDIA.photo).replace(/\s+/g, ' '))}`;
 
-/* --- papel de parede -------------------------------------------- */
+/* --- papel de parede: doodles em traço, como o do WhatsApp -------- */
 (function doodle() {
-  const marks = [];
-  let seed = 7;
-  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  for (let i = 0; i < 46; i++) {
-    const x = rnd() * 400, y = rnd() * 400, r = 6 + rnd() * 13, k = Math.floor(rnd() * 4);
-    if (k === 0) marks.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>`);
-    else if (k === 1) marks.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(r * 1.6).toFixed(1)}" height="${(r * 1.2).toFixed(1)}" rx="3"/>`);
-    else if (k === 2) marks.push(`<path d="M${x.toFixed(1)} ${y.toFixed(1)}h${(r * 2).toFixed(1)}"/>`);
-    else marks.push(`<path d="M${x.toFixed(1)} ${y.toFixed(1)}a${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${(r * 1.4).toFixed(1)} ${(r * .6).toFixed(1)}"/>`);
+  // desenhos em caixa 24x24, só contorno
+  const GLYPHS = [
+    'M12 20.5S5 16 5 11.2A3.9 3.9 0 0 1 12 8.6a3.9 3.9 0 0 1 7 2.6c0 4.8-7 9.3-7 9.3z',            // coração
+    'M4 5h16v10H9.5L4 19z',                                                                          // balão de fala
+    'M3.5 8.5h4L9 6.5h6l1.5 2h4v10h-17zM12 13.5a3 3 0 1 0 0-.01z',                                   // câmera
+    'M4.5 6.5h11v6a4 4 0 0 1-4 4h-3a4 4 0 0 1-4-4zM15.5 8.5h3a2 2 0 0 1 0 4h-3',                     // xícara
+    'M9 17.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 0V6l9.5-2v11.5m0 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z',        // nota musical
+    'M12 4l2.4 5 5.6.7-4.1 3.8 1.1 5.5-5-2.8-5 2.8 1.1-5.5L4 9.7l5.6-.7z',                           // estrela
+    'M3 12l17.5-7.5L15 21.5l-3.2-6.8z',                                                              // avião
+    'M4.5 10.5h15v9h-15zM4 7.5h16v3H4zM12 7.5v12M12 7.5s-3.5-4-1-4.5 1 4.5 1 4.5zm0 0s3.5-4 1-4.5-1 4.5-1 4.5z', // presente
+    'M9.5 17.5h5M10.5 20h3M12 3.5a5 5 0 0 1 3 9v2H9v-2a5 5 0 0 1 3-9z',                              // lâmpada
+    'M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6l1.4 1.4m10 10 1.4 1.4m0-12.8-1.4 1.4m-10 10-1.4 1.4', // sol
+    'M6.5 17.5a3.8 3.8 0 0 1 .6-7.6 5 5 0 0 1 9.5 1.2 3.3 3.3 0 0 1 1.4 6.4z',                       // nuvem
+    'M4 5.5h7v13H4zM13 5.5h7v13h-7z',                                                                // livro
+    'M12 4.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM12 8v4.4l3 1.8',                                 // relógio
+    'M12 4.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zM9 10.5v.01M15 10.5v.01M8.8 14a4 4 0 0 0 6.4 0',  // rosto
+    'M7 3.5h10v17H7zM10 5.6h4',                                                                      // celular
+    'M5 19.5 9.5 8l3 7 2.5-3.5 4 8z',                                                                // montanha
+    'M12 3.5c3 3.5 4.5 6 4.5 8.5a4.5 4.5 0 0 1-9 0c0-2.5 1.5-5 4.5-8.5z'                             // gota
+  ];
+
+  const SIZE = 480;
+  let x = 20250906;
+  const rnd = () => (x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+
+  const placed = [];
+  const items = [];
+  let guard = 0;
+  while (items.length < 26 && guard++ < 900) {
+    const s = 0.85 + rnd() * 0.6;
+    const r = 15 * s;
+    const cx = rnd() * SIZE, cy = rnd() * SIZE;
+    // sem sobreposição: o padrão do WhatsApp é esparso e regular
+    if (placed.some((p) => Math.hypot(p.cx - cx, p.cy - cy) < (p.r + r) * 1.5)) continue;
+    placed.push({ cx, cy, r });
+    items.push({ cx, cy, s, rot: (rnd() * 50 - 25).toFixed(1), g: GLYPHS[Math.floor(rnd() * GLYPHS.length)] });
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none" stroke="COLOR" stroke-width="2" stroke-linecap="round">${marks.join('')}</svg>`;
+
+  // repete nas bordas para o ladrilho fechar sem emenda
+  const parts = [];
+  items.forEach((it) => {
+    for (const [ox, oy] of [[0, 0], [-SIZE, 0], [SIZE, 0], [0, -SIZE], [0, SIZE]]) {
+      const px = it.cx + ox, py = it.cy + oy;
+      if (px < -40 || px > SIZE + 40 || py < -40 || py > SIZE + 40) continue;
+      parts.push(`<g transform="translate(${(px - 12 * it.s).toFixed(1)} ${(py - 12 * it.s).toFixed(1)}) scale(${it.s.toFixed(2)}) rotate(${it.rot} 12 12)"><path d="${it.g}"/></g>`);
+    }
+  });
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}" fill="none" stroke="COLOR" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${parts.join('')}</svg>`;
+
   const apply = () => {
     const c = getComputedStyle(document.documentElement).getPropertyValue('--doodle').trim();
     document.documentElement.style.setProperty('--doodle-url',
@@ -221,7 +260,7 @@ function preview(chat) {
   if (!m) return { text: 'Sem mensagens', ts: 0 };
   let body;
   if (m.type === 'image') body = '📷 ' + (m.text || 'Foto');
-  else if (m.type === 'audio') body = '🎤 Mensagem de voz (' + mmss(m.dur || 0) + ')';
+  else if (m.type === 'audio') body = '🎤 Mensagem de voz (' + mmss(audioDur(m)) + ')';
   else if (m.type === 'doc') body = '📄 ' + (m.filename || 'Documento');
   else if (m.type === 'system') body = m.text;
   else body = m.text || '';
@@ -342,15 +381,30 @@ function bodyHTML(chat, m, meta) {
                 <img src="${mediaURL(m.media)}" alt="${esc(m.text || 'Foto enviada na conversa')}" loading="lazy">
               </span>` + (m.text ? `<div class="text">${linkify(esc(m.text))}${meta}</div>` : meta);
     case 'audio': {
-      const bars = Array.from({ length: 34 }, (_, i) => {
-        const h = 4 + Math.abs(Math.sin((i + 1) * 1.7 + (m.dur || 5))) * 20;
-        return `<i style="height:${h.toFixed(0)}px"></i>`;
-      }).join('');
-      return `<div class="audio" data-audio="${m.id}" data-dur="${m.dur || 10}">
-                <button class="play" aria-label="Reproduzir"><svg><use href="#i-play"></use></svg></button>
-                <span class="wave">${bars}</span>
-                <span class="dur">${mmss(m.dur || 10)}</span>
-              </div><div class="metabar">${meta}</div>`;
+      const dur = audioDur(m);
+      const sp = speaker(chat, m.from);
+      const bars = waveBars(m.id, 32);
+      const playing = player.id === m.id;
+      return `<div class="audio${m.played ? ' played' : ''}${playing ? ' playing' : ''}"
+                   data-audio="${m.id}" data-dur="${dur.toFixed(2)}">
+                <button class="play" aria-label="Reproduzir mensagem de voz">
+                  <svg><use href="#i-${playing ? 'pause' : 'play'}"></use></svg></button>
+                <span class="acol">
+                  <span class="wave" role="slider" tabindex="0" aria-label="Posição do áudio"
+                        aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">${bars}<i class="dot" style="left:0%"></i></span>
+                  <span class="arow">
+                    <span class="dur">${mmss(dur)}</span>
+                    ${m.transcript ? '<button class="tr-toggle">Transcrição</button>' : ''}
+                  </span>
+                </span>
+                <button class="speed" hidden>1×</button>
+                <span class="ava-wrap">
+                  <span class="avatar ava" data-ava="${esc(sp.name)}" data-avac="${sp.color}"></span>
+                  <span class="ava-mic"><svg><use href="#i-mic"></use></svg></span>
+                </span>
+              </div>
+              ${m.transcript ? `<div class="transcript" hidden><small>Transcrição gerada pelo app</small><span class="tr-body">${esc(m.transcript)}</span></div>` : ''}
+              <div class="metabar">${meta}</div>`;
     }
     case 'doc':
       return `<div class="doc"><svg><use href="#i-doc"></use></svg>
@@ -420,7 +474,8 @@ function renderMessages(keepScroll = false) {
         ${bodyHTML(chat, m, meta)}
         ${reacts}
       </div>
-      <button class="act" aria-label="Opções da mensagem"><svg><use href="#i-down"></use></svg></button>`;
+      <button class="act" aria-label="Opções da mensagem"><svg><use href="#i-down"></use></svg></button>
+      <span class="swipe-hint" aria-hidden="true"><svg><use href="#i-reply"></use></svg></span>`;
     frag.appendChild(wrap);
   });
 
@@ -435,6 +490,22 @@ function renderMessages(keepScroll = false) {
       if (!img.complete) img.addEventListener('load', () => { box.scrollTop = box.scrollHeight; }, { once: true });
     });
   }
+  $$('[data-ava]', inner).forEach((a) => paintAvatar(a, a.dataset.ava, a.dataset.avac));
+
+  if (player.id) {
+    const el = audioEl(player.id);
+    if (el) {
+      el.classList.add('playing', 'played');
+      $('.play use', el)?.setAttribute('href', '#i-pause');
+      const sp = $('.speed', el);
+      if (sp) { sp.hidden = false; sp.textContent = `${player.rate}×`; }
+      const tr = el.parentElement?.querySelector('.transcript');
+      if (tr) tr.hidden = false;
+      splitTranscript(el);
+      paintAudio(el, player.id, player.elapsed, player.dur);
+    }
+  }
+
   applyFindHighlight();
 }
 
@@ -454,6 +525,11 @@ function openChat(id) {
   const chat = chatById(id);
   if (!chat) return;
   clearTimeout(botTimer);
+  stopAudio(false);
+  if (rec.on) endRec(false);
+  if (innerWidth <= 860 && !document.body.classList.contains('chat-open')) {
+    try { history.pushState({ chat: id }, ''); } catch (_) {}
+  }
   current = id;
   chat.unread = 0;
   replyTo = null;
@@ -461,7 +537,6 @@ function openChat(id) {
   closeFind();
 
   $('#paneEmpty').hidden = true;
-  $('#paneEmpty').style.display = 'none';
   $('#paneChat').hidden = false;
   document.body.classList.add('chat-open');
 
@@ -477,12 +552,17 @@ function openChat(id) {
   if (window.innerWidth > 860) $('#input').focus();
 }
 
-function closeChat() {
+function closeChat(fromPop) {
+  stopAudio(false);
+  if (rec.on) endRec(false);
+  const wasOpen = document.body.classList.contains('chat-open');
   current = null;
+  if (!fromPop && wasOpen && innerWidth <= 860 && history.state?.chat) {
+    try { history.back(); } catch (_) {}
+  }
   document.body.classList.remove('chat-open');
   $('#paneChat').hidden = true;
   $('#paneEmpty').hidden = false;
-  $('#paneEmpty').style.display = '';
   renderList();
 }
 
@@ -647,8 +727,11 @@ function flashTo(el) {
 /* ------------------------------------------------------------------
    Menu flutuante
 ------------------------------------------------------------------ */
+let menuOpenedAt = 0;
+
 function showMenu(x, y, items) {
   const menu = $('#menu');
+  menuOpenedAt = performance.now();
   menu.innerHTML = '';
   items.forEach((it) => {
     if (it === '-') { menu.appendChild(document.createElement('hr')); return; }
@@ -702,7 +785,31 @@ function btn(label, cls, fn) {
 /* ------------------------------------------------------------------
    Ações da conversa
 ------------------------------------------------------------------ */
-function exportChat(chat) {
+/* Em página publicada, o próprio frame não pode baixar arquivos: quem entrega
+   é a capacidade `downloads` do hospedeiro. Aberto localmente ou no GitHub
+   Pages ela não existe, e aí o link de blob comum funciona normalmente.
+   Resolve em segundo plano desde o início para o botão responder na hora. */
+const downloadsReady = (async () => {
+  try { return (await window.claude?.use?.('downloads')) ?? null; } catch (_) { return null; }
+})();
+
+function copyText(text) {
+  try {
+    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } catch (_) {}
+  fallbackCopy(text);
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (_) {}
+  ta.remove();
+}
+
+function chatToText(chat) {
   const lines = chat.messages.map((m) => {
     const d = new Date(m._ts);
     const stamp = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${hhmm(m._ts)}`;
@@ -715,12 +822,61 @@ function exportChat(chat) {
     return `${stamp} - ${who}: ${body}`;
   });
   lines.unshift('*** Conversa fictícia gerada pelo ZapClone — não é um registro real. ***', '');
-  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `conversa-ficticia-${chat.id}.txt`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  return lines.join('\n');
+}
+
+/* Mostra o texto e oferece o download. Em páginas publicadas o navegador
+   costuma bloquear downloads iniciados pela própria página, então o texto
+   fica sempre visível para copiar. */
+function exportChat(chat) {
+  const text = chatToText(chat);
+  const status = document.createElement('span');
+  status.className = 'msgline';
+
+  modal('Exportar conversa', `
+    <p>Conversa em texto puro, no mesmo formato de uma exportação comum. Copie daqui ou baixe o arquivo.</p>
+    <textarea class="editor" id="expText" readonly spellcheck="false"></textarea>`, [
+      status,
+      btn('Copiar', '', () => {
+        copyText(text);
+        status.className = 'msgline ok';
+        status.textContent = 'Copiado.';
+      }),
+      btn('Baixar .txt', '', async () => {
+        const filename = `conversa-ficticia-${chat.id}.txt`;
+        const dl = await downloadsReady;
+        if (dl) {
+          try {
+            await dl.save({ filename, data: text });
+            status.className = 'msgline ok';
+            status.textContent = 'Arquivo salvo.';
+          } catch (e) {
+            status.className = 'msgline err';
+            status.textContent = e?.code === 'declined'
+              ? 'Download cancelado.'
+              : 'Não foi possível baixar aqui — use Copiar.';
+          }
+          return;
+        }
+        try {
+          const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+          status.className = 'msgline ok';
+          status.textContent = 'Baixando ' + filename;
+        } catch (_) {
+          status.className = 'msgline err';
+          status.textContent = 'Download bloqueado neste contexto. Use Copiar.';
+        }
+      }),
+      btn('Fechar', 'primary', closeModal)
+    ]);
+  $('#expText').value = text;
 }
 
 function showProfile(chat) {
@@ -778,7 +934,7 @@ function messageMenu(x, y, chat, m) {
         renderMessages(true); save();
       } },
     { label: 'Responder', run: () => startReply(chat, m) },
-    { label: 'Copiar texto', run: () => navigator.clipboard?.writeText(m.text || m.filename || '') },
+    { label: 'Copiar texto', run: () => copyText(m.text || m.filename || '') },
     '-',
     { label: 'Apagar mensagem', danger: true, run: () => {
         chat.messages = chat.messages.filter((x) => x.id !== m.id);
@@ -974,39 +1130,330 @@ function attachMenu(x, y) {
   ]);
 }
 
-/* --- reprodução simulada de áudio -------------------------------- */
-const audioTimers = new Map();
-function toggleAudio(el) {
-  const id = el.dataset.audio;
-  const dur = Number(el.dataset.dur) || 10;
-  const bars = $$('.wave i', el);
-  const durEl = $('.dur', el);
-  const icon = $('.play use', el);
+/* ==================================================================
+   Mensagens de voz
 
-  if (audioTimers.has(id)) {
-    clearInterval(audioTimers.get(id).timer);
-    audioTimers.delete(id);
-    icon.setAttribute('href', '#i-play');
-    durEl.textContent = mmss(dur);
-    bars.forEach((b) => b.classList.remove('on'));
-    return;
+   Quando a mensagem tem transcrição e o navegador oferece síntese de
+   fala, o áudio toca de verdade — com voz própria por personagem,
+   progresso real na onda, palavra destacada na transcrição, controle
+   de velocidade e busca ao arrastar. Sem síntese disponível, cai para
+   uma reprodução simulada com a mesma interface.
+   ================================================================== */
+
+const TTS = typeof speechSynthesis !== 'undefined' && typeof SpeechSynthesisUtterance !== 'undefined';
+
+/* timbres por personagem — o `voice` do roteiro escolhe um destes */
+const VOICE_PROFILE = {
+  f1: { pitch: 1.18, rate: 1.02 },
+  f2: { pitch: 0.98, rate: 0.90 },
+  f3: { pitch: 1.32, rate: 1.10 },
+  m1: { pitch: 0.72, rate: 1.04 },
+  m2: { pitch: 0.58, rate: 0.96 },
+  me: { pitch: 1.00, rate: 1.00 }
+};
+
+let ttsVoice = null;
+function pickVoice() {
+  if (!TTS) return null;
+  const all = speechSynthesis.getVoices();
+  if (!all.length) return null;
+  return all.find((v) => /pt[-_]BR/i.test(v.lang))
+      || all.find((v) => /^pt/i.test(v.lang))
+      || all.find((v) => v.default)
+      || all[0];
+}
+if (TTS) {
+  ttsVoice = pickVoice();
+  speechSynthesis.addEventListener('voiceschanged', () => { ttsVoice = pickVoice(); });
+}
+
+/* ~13,5 caracteres por segundo é uma leitura natural em pt-BR */
+const CPS = 13.5;
+function audioDur(m) {
+  if (m.transcript) return Math.max(2, m.transcript.length / CPS);
+  return m.dur || 10;
+}
+
+/* onda estável por mensagem: mesma id, mesmo desenho */
+function waveBars(seedStr, n) {
+  let h = 2166136261;
+  for (let i = 0; i < seedStr.length; i++) { h ^= seedStr.charCodeAt(i); h = Math.imul(h, 16777619); }
+  let x = (h >>> 0) || 1;
+  const next = () => (x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  return Array.from({ length: n }, (_, i) => {
+    // envelope: começa e termina baixo, como uma fala real
+    const env = 0.45 + 0.55 * Math.sin((i / (n - 1)) * Math.PI);
+    const hgt = 3 + next() * 21 * env;
+    return `<i style="height:${hgt.toFixed(1)}px"></i>`;
+  }).join('');
+}
+
+const player = { id: null, raf: 0, dur: 0, elapsed: 0, startedAt: 0, rate: 1, utter: null, sim: 0 };
+
+function audioEl(id) { return $(`[data-audio="${id}"]`); }
+
+function stopAudio(rerenderIcon = true) {
+  if (!player.id) return;
+  const el = audioEl(player.id);
+  cancelAnimationFrame(player.raf);
+  clearInterval(player.sim);
+  player.raf = 0; player.sim = 0;
+  if (TTS) { player.utter = null; speechSynthesis.cancel(); }
+  const id = player.id;
+  player.id = null;
+  if (el && rerenderIcon) {
+    el.classList.remove('playing');
+    $('.play use', el)?.setAttribute('href', '#i-play');
+    $('.speed', el)?.setAttribute('hidden', '');
+    paintAudio(el, id, 0, player.dur);
   }
-  let t = 0;
-  icon.setAttribute('href', '#i-pause');
-  const timer = setInterval(() => {
-    t += 0.12;
-    const p = t / dur;
-    if (p >= 1) {
-      clearInterval(timer); audioTimers.delete(id);
-      icon.setAttribute('href', '#i-play');
-      durEl.textContent = mmss(dur);
-      bars.forEach((b) => b.classList.remove('on'));
+}
+
+function paintAudio(el, id, elapsed, dur) {
+  if (!el) return;
+  const p = dur > 0 ? clamp(elapsed / dur, 0, 1) : 0;
+  const bars = $$('.wave i', el);
+  bars.forEach((b, i) => b.classList.toggle('on', (i + 1) / bars.length <= p));
+  const dot = $('.dot', el);
+  if (dot) dot.style.left = `calc(${(p * 100).toFixed(2)}% + ${(5.5 - p * 11).toFixed(2)}px)`;
+  const wave = $('.wave', el);
+  if (wave) wave.setAttribute('aria-valuenow', Math.round(p * 100));
+  const durEl = $('.dur', el);
+  if (durEl) durEl.textContent = mmss(elapsed > 0 ? Math.max(0, dur - elapsed) : dur);
+
+  // palavra corrente na transcrição
+  const tr = el.parentElement?.querySelector('.transcript .tr-body');
+  if (tr && tr.dataset.split === '1') {
+    const words = $$('.w', tr);
+    const at = Math.floor(p * words.length);
+    words.forEach((w, i) => w.classList.toggle('on', i === at && p > 0 && p < 1));
+  }
+}
+
+function splitTranscript(el) {
+  const tr = el.parentElement?.querySelector('.transcript .tr-body');
+  if (!tr || tr.dataset.split === '1') return;
+  const words = tr.textContent.split(/(\s+)/);
+  tr.textContent = '';
+  words.forEach((w) => {
+    if (/^\s+$/.test(w)) { tr.appendChild(document.createTextNode(w)); return; }
+    const span = document.createElement('span');
+    span.className = 'w';
+    span.textContent = w;
+    tr.appendChild(span);
+  });
+  tr.dataset.split = '1';
+}
+
+function playAudio(el, fromRatio = 0) {
+  const chat = chatById(current);
+  if (!chat) return;
+  const id = el.dataset.audio;
+  const m = msgById(chat, id);
+  if (!m) return;
+
+  if (player.id && player.id !== id) stopAudio();
+
+  const baseDur = audioDur(m);
+  player.id = id;
+  player.dur = baseDur / player.rate;
+  player.elapsed = player.dur * fromRatio;
+  player.startedAt = performance.now() - player.elapsed * 1000;
+
+  m.played = true;
+  el.classList.add('playing', 'played');
+  $('.play use', el)?.setAttribute('href', '#i-pause');
+  const speedBtn = $('.speed', el);
+  if (speedBtn) { speedBtn.hidden = false; speedBtn.textContent = `${player.rate}×`; }
+  splitTranscript(el);
+
+  const finish = () => {
+    const wasEl = audioEl(id) || el;
+    stopAudio(false);
+    if (wasEl) {
+      wasEl.classList.remove('playing');
+      $('.play use', wasEl)?.setAttribute('href', '#i-play');
+      $('.speed', wasEl)?.setAttribute('hidden', '');
+      paintAudio(wasEl, id, 0, baseDur / player.rate);
+      $$('.transcript .w', wasEl.parentElement || document).forEach((w) => w.classList.remove('on'));
+    }
+    renderList(); save();
+  };
+
+  // A fala é uma camada por cima: se o dispositivo não tiver voz instalada,
+  // ou a síntese falhar, a reprodução visual continua igual pelo cronômetro.
+  let speaking = false;
+  if (TTS && m.transcript) {
+    const prof = VOICE_PROFILE[m.voice] || VOICE_PROFILE[m.from === 'me' ? 'me' : 'f1'];
+    const offset = Math.floor(m.transcript.length * fromRatio);
+    const text = fromRatio > 0 ? m.transcript.slice(offset) : m.transcript;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'pt-BR';
+      if (ttsVoice) u.voice = ttsVoice;
+      u.pitch = prof.pitch;
+      u.rate = clamp(prof.rate * player.rate, 0.1, 10);
+      u.onstart = () => { if (player.id === id) speaking = true; };
+      u.onend = () => { if (player.id === id && speaking) finish(); };
+      u.onerror = () => { speaking = false; };
+      player.utter = u;
+      // alguns navegadores engasgam se falar no mesmo tick do cancel
+      setTimeout(() => { if (player.id === id) { try { speechSynthesis.speak(u); } catch (_) {} } }, 30);
+    } catch (_) { speaking = false; }
+  }
+
+  const tick = () => {
+    if (player.id !== id) return;
+    player.elapsed = (performance.now() - player.startedAt) / 1000;
+    // se a voz estiver mesmo falando, segura no fim e espera o onend,
+    // porque a duração real da fala nunca bate exatamente com a estimativa
+    if (player.elapsed >= player.dur) {
+      if (speaking && player.elapsed < player.dur * 2.5) {
+        paintAudio(audioEl(id), id, player.dur, player.dur);
+        player.raf = requestAnimationFrame(tick);
+        return;
+      }
+      finish();
       return;
     }
-    durEl.textContent = mmss(dur - t);
-    bars.forEach((b, i) => b.classList.toggle('on', i / bars.length <= p));
-  }, 120);
-  audioTimers.set(id, { timer });
+    paintAudio(audioEl(id), id, player.elapsed, player.dur);
+    player.raf = requestAnimationFrame(tick);
+  };
+  player.raf = requestAnimationFrame(tick);
+}
+
+function toggleAudio(el) {
+  if (player.id === el.dataset.audio) { stopAudio(); renderList(); save(); return; }
+  playAudio(el, 0);
+}
+
+function seekAudio(el, clientX) {
+  const wave = $('.wave', el);
+  const r = wave.getBoundingClientRect();
+  const ratio = clamp((clientX - r.left) / r.width, 0, 1);
+  const wasPlaying = player.id === el.dataset.audio;
+  if (wasPlaying) stopAudio(false);
+  playAudio(el, ratio);
+}
+
+function cycleSpeed(el) {
+  const order = [1, 1.5, 2];
+  player.rate = order[(order.indexOf(player.rate) + 1) % order.length];
+  const btn = $('.speed', el);
+  if (btn) btn.textContent = `${player.rate}×`;
+  const ratio = player.dur > 0 ? clamp(player.elapsed / player.dur, 0, 0.98) : 0;
+  if (player.id === el.dataset.audio) { stopAudio(false); playAudio(el, ratio); }
+}
+
+/* ------------------------------------------------------------------
+   Gravação de voz (simulada — não pede acesso ao microfone)
+------------------------------------------------------------------ */
+let rec = { on: false, t0: 0, timer: 0 };
+
+function startRec() {
+  if (!current || rec.on) return;
+  rec.on = true;
+  rec.t0 = Date.now();
+  $('#composerRow').classList.add('hide');
+  $('#recRow').classList.add('on');
+  $('#emojiPop').classList.remove('on');
+  $('#recTime').textContent = '0:00';
+  rec.timer = setInterval(() => {
+    $('#recTime').textContent = mmss((Date.now() - rec.t0) / 1000);
+  }, 250);
+}
+
+function endRec(keep) {
+  if (!rec.on) return;
+  clearInterval(rec.timer);
+  rec.on = false;
+  $('#recRow').classList.remove('on');
+  $('#composerRow').classList.remove('hide');
+  const secs = Math.max(1, Math.round((Date.now() - rec.t0) / 1000));
+  if (!keep) return;
+  const chat = chatById(current);
+  if (!chat) return;
+  pushMessage(chat, { from: 'me', type: 'audio', dur: secs, voice: 'me', status: 'sent', replyTo });
+  replyTo = null;
+  $('#replyBar').classList.remove('on');
+  renderMessages(); renderList(); save();
+  setTimeout(() => { const l = lastMsg(chat); if (l) { l.status = 'read'; renderMessages(true); renderList(); save(); } }, 1500);
+}
+
+/* ------------------------------------------------------------------
+   Toque longo e arrastar-para-responder (celular)
+------------------------------------------------------------------ */
+function longPress(root, find, action) {
+  let timer = 0, sx = 0, sy = 0, target = null;
+  const cancel = () => { clearTimeout(timer); timer = 0; target?.classList.remove('pressing'); target = null; };
+
+  root.addEventListener('touchstart', (e) => {
+    const el = find(e.target);
+    if (!el) return;
+    target = el; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    el.classList.add('pressing');
+    timer = setTimeout(() => {
+      const t = target;
+      cancel();
+      if (!t) return;
+      navigator.vibrate?.(12);
+      action(t, sx, sy);
+    }, 480);
+  }, { passive: true });
+
+  root.addEventListener('touchmove', (e) => {
+    if (!timer) return;
+    const dx = Math.abs(e.touches[0].clientX - sx), dy = Math.abs(e.touches[0].clientY - sy);
+    if (dx > 10 || dy > 10) cancel();
+  }, { passive: true });
+
+  root.addEventListener('touchend', cancel, { passive: true });
+  root.addEventListener('touchcancel', cancel, { passive: true });
+}
+
+function swipeToReply(root) {
+  let el = null, bubble = null, sx = 0, sy = 0, dx = 0, axis = '';
+
+  root.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const m = e.target.closest('.msg');
+    if (!m || !m.dataset.id) return;
+    el = m; bubble = $('.bubble', m);
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0; axis = '';
+  }, { passive: true });
+
+  root.addEventListener('touchmove', (e) => {
+    if (!el) return;
+    const cx = e.touches[0].clientX - sx, cy = e.touches[0].clientY - sy;
+    if (!axis) {
+      if (Math.abs(cy) > 10 && Math.abs(cy) > Math.abs(cx)) { axis = 'y'; el = null; return; }
+      if (Math.abs(cx) > 12) { axis = 'x'; el.classList.add('swiping'); }
+      else return;
+    }
+    // só arrasto para a direita, com resistência
+    dx = clamp(cx, 0, 90);
+    bubble.style.transform = `translateX(${(dx * 0.72).toFixed(1)}px)`;
+    const hint = $('.swipe-hint', el);
+    if (hint) hint.style.opacity = String(clamp(dx / 60, 0, 1));
+  }, { passive: true });
+
+  const release = () => {
+    if (!el) { axis = ''; return; }
+    const m = el, moved = dx;
+    m.classList.remove('swiping');
+    if (bubble) bubble.style.transform = '';
+    const hint = $('.swipe-hint', m);
+    if (hint) hint.style.opacity = '0';
+    if (moved > 52) {
+      const chat = chatById(current);
+      const msg = chat && msgById(chat, m.dataset.id);
+      if (msg) { navigator.vibrate?.(10); startReply(chat, msg); }
+    }
+    el = null; bubble = null; dx = 0; axis = '';
+  };
+  root.addEventListener('touchend', release, { passive: true });
+  root.addEventListener('touchcancel', release, { passive: true });
 }
 
 /* ------------------------------------------------------------------
@@ -1060,7 +1507,22 @@ function wire() {
   /* área de mensagens */
   $('#messages').addEventListener('click', (e) => {
     const audio = e.target.closest('[data-audio]');
-    if (audio) { toggleAudio(audio); return; }
+    if (audio) {
+      if (e.target.closest('.speed')) { cycleSpeed(audio); return; }
+      if (e.target.closest('.tr-toggle')) {
+        const tr = audio.parentElement.querySelector('.transcript');
+        if (tr) {
+          const stick = nearBottom();
+          tr.hidden = !tr.hidden;
+          if (!tr.hidden) splitTranscript(audio);
+          if (stick) scrollBottom(false);
+        }
+        return;
+      }
+      if (e.target.closest('.wave')) { seekAudio(audio, e.clientX); return; }
+      toggleAudio(audio);
+      return;
+    }
 
     const img = e.target.closest('[data-img]');
     if (img) {
@@ -1107,15 +1569,9 @@ function wire() {
   ta.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
   });
-  $('#btnSend').onclick = () => {
-    if ($('#input').value.trim()) send();
-    else {
-      const chat = chatById(current);
-      if (!chat) return;
-      pushMessage(chat, { from: 'me', type: 'audio', dur: Math.round(rand(4, 40)), status: 'sent' });
-      renderMessages(); renderList(); save();
-    }
-  };
+  $('#btnSend').onclick = () => { if ($('#input').value.trim()) send(); else startRec(); };
+  $('#recCancel').onclick = () => endRec(false);
+  $('#recSend').onclick = () => endRec(true);
   $('#btnEmoji').onclick = (e) => { e.stopPropagation(); $('#emojiPop').classList.toggle('on'); };
   $('#btnAttach').onclick = (e) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -1136,7 +1592,8 @@ function wire() {
   $('#lightbox').addEventListener('click', (e) => { if (e.target.id === 'lightbox') $('#lightbox').classList.remove('on'); });
 
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('#menu')) hideMenu();
+    // ignora o próprio clique (ou o clique sintetizado pelo toque longo) que abriu o menu
+    if (!e.target.closest('#menu') && performance.now() - menuOpenedAt > 350) hideMenu();
     if (!e.target.closest('#emojiPop') && !e.target.closest('#btnEmoji')) $('#emojiPop').classList.remove('on');
   });
 
@@ -1157,14 +1614,47 @@ function wire() {
   window.addEventListener('resize', () => {
     if (innerWidth > 860 && !current) document.body.classList.remove('chat-open');
   });
+
+  /* gestos */
+  longPress($('#messages'), (t) => t.closest('.msg[data-id]'), (el, x, y) => {
+    const chat = chatById(current);
+    const m = chat && msgById(chat, el.dataset.id);
+    if (m) messageMenu(x - 100, y + 8, chat, m);
+  });
+  longPress($('#list'), (t) => t.closest('.row'), (el, x, y) => {
+    const chat = chatById(el.dataset.id);
+    if (chat) chatMenu(x - 100, y + 8, chat);
+  });
+  swipeToReply($('#messages'));
+
+  /* teclado virtual: encolhe a área segura e mantém o fim da conversa à vista */
+  const vv = window.visualViewport;
+  if (vv) {
+    let base = vv.height;
+    vv.addEventListener('resize', () => {
+      const open = vv.height < base - 120;
+      document.body.classList.toggle('kb-open', open);
+      if (!open) base = Math.max(base, vv.height);
+      if (open && current) scrollBottom(false);
+    });
+  }
+
+  /* botão voltar do celular fecha a conversa em vez de sair da página */
+  window.addEventListener('popstate', () => {
+    if (document.body.classList.contains('chat-open') && innerWidth <= 860) closeChat(true);
+  });
 }
 
 /* ------------------------------------------------------------------
    Boot
 ------------------------------------------------------------------ */
 (function init() {
-  let t = 'light';
-  try { t = localStorage.getItem(THEME_KEY) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (_) {}
+  let t = document.documentElement.dataset.theme || 'light';
+  try {
+    t = localStorage.getItem(THEME_KEY)
+      || document.documentElement.dataset.theme
+      || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch (_) {}
   setTheme(t);
 
   load();

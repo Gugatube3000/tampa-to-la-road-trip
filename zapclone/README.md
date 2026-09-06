@@ -7,6 +7,14 @@ Abra `zapclone/index.html` no navegador (ou acesse `/zapclone/` no GitHub Pages)
 
 ## O que tem
 
+**Mensagens de voz**
+- Áudio que **toca de verdade**: a transcrição do roteiro é falada pelo sintetizador
+  do próprio navegador, com timbre distinto por personagem (`voice` no roteiro)
+- Onda com progresso real, marcador arrastável para buscar posição, velocidade 1× / 1,5× / 2×,
+  transcrição com a palavra corrente destacada e ponto azul de "ainda não ouvido"
+- Sem voz instalada no aparelho, a reprodução visual continua idêntica pelo cronômetro
+- Botão do microfone abre uma barra de gravação com cronômetro, descartar e enviar
+
 **Conversa**
 - Balões de entrada e saída com rabinho, agrupamento por remetente e separadores de data
   (Hoje / Ontem / dia da semana / data completa)
@@ -32,6 +40,13 @@ Abra `zapclone/index.html` no navegador (ou acesse `/zapclone/` no GitHub Pages)
 - Tema claro e escuro, com detecção da preferência do sistema
 - Layout responsivo: duas colunas no desktop, navegação de painel único no celular
 
+**Celular**
+- Altura em `dvh` e áreas seguras (`env(safe-area-inset-*)`) para notch e barra de gestos
+- Toque longo abre o menu de contexto; arrastar a mensagem para a direita responde a ela
+- Botão voltar do aparelho fecha a conversa em vez de sair da página
+- Campo de texto em 16px para o iOS não dar zoom ao focar; ajuste ao abrir o teclado virtual
+- Alvos de toque ampliados, sem rolagem horizontal e sem rolagem do documento
+
 **Roteiro**
 - Motor de resposta automática por conversa: regras com expressão regular, atrasos de digitação
   configuráveis e respostas de fallback (em grupo, cada resposta pode vir de um participante
@@ -39,6 +54,11 @@ Abra `zapclone/index.html` no navegador (ou acesse `/zapclone/` no GitHub Pages)
 - **Editor de roteiro** embutido (ícone `<>`): o app inteiro é gerado a partir de um objeto JSON
   que você pode editar na tela e aplicar na hora
 - Criação de contatos e grupos novos pela interface
+
+## Arquivo único
+
+`node build.mjs` gera `zapclone-standalone.html`: um único HTML com CSS, JS e roteiro
+embutidos, que roda offline ao abrir direto do disco.
 
 ## Atalhos
 
@@ -80,6 +100,8 @@ Abra `zapclone/index.html` no navegador (ou acesse `/zapclone/` no GitHub Pages)
 - `type`: `text`, `image` (com `media` e `text` opcional), `audio` (com `dur` em segundos),
   `doc` (com `filename`, `pages`, `size`) ou `system`.
 - `status` (só para `from: "me"`): `sent`, `delivered` ou `read`.
+- Áudio: `transcript` faz o navegador falar a mensagem; `voice` escolhe o timbre
+  (`f1`, `f2`, `f3`, `m1`, `m2`, `me`); sem `transcript`, use `dur` em segundos.
 - Em grupos, cada item de `fallback` e cada `rule` pode trazer `from` para escolher quem responde.
 
 ## Dados e privacidade
@@ -103,7 +125,8 @@ atribuídas a alguém identificável são invenção — não deixam de ser porq
 ```
 zapclone/
 ├── index.html   estrutura e sprite de ícones
-├── styles.css   temas, layout e balões
-├── app.js       estado, renderização, busca, menus e motor de respostas
-└── data.js      roteiro de exemplo (fictício)
+├── styles.css   temas, layout, balões e player de voz
+├── app.js       estado, renderização, busca, menus, áudio, gestos e respostas
+├── data.js      roteiro de exemplo (fictício)
+└── build.mjs    empacota tudo em um HTML único
 ```

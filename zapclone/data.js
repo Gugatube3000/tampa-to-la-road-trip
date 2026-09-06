@@ -36,7 +36,8 @@ const DEFAULT_DATA = {
         { from: 'marina', t: -190, type: 'image', media: 'sunset', text: 'olha o céu daqui de casa agora' },
         { from: 'me', t: -184, type: 'text', text: 'que absurdo isso', status: 'read' },
         { from: 'me', t: -183, type: 'text', text: 'tira uma foto pra mim quando escurecer', status: 'read' },
-        { from: 'marina', t: -46, type: 'audio', dur: 23 },
+        { from: 'marina', t: -46, type: 'audio', voice: 'f1',
+          transcript: 'Oi! Então, eu fui ver o lugar novo hoje de tarde. É pequeno, mas tem uma varanda nos fundos que é linda. Já reservei a mesa pras oito e meia, tá? Não atrasa.' },
         { from: 'marina', t: -44, type: 'text', text: 'resumindo: o lugar novo tem mesa na varanda. reservei pras 20h30.' },
         { from: 'me', t: -12, type: 'text', text: 'perfeito, vou direto do trabalho então', status: 'delivered' }
       ],
@@ -84,7 +85,9 @@ const DEFAULT_DATA = {
         { from: 'bia', t: -118, type: 'text', text: 'kkkkkkkkkk' },
         { from: 'marina', t: -30, type: 'text', text: 'alguém lembrou do carvão?' },
         { from: 'teo', t: -28, type: 'text', text: '...' },
-        { from: 'caio', t: -27, type: 'text', text: 'ngm lembrou do carvão' }
+        { from: 'caio', t: -27, type: 'text', text: 'ngm lembrou do carvão' },
+        { from: 'bia', t: -25, type: 'audio', voice: 'f3',
+          transcript: 'Gente, eu não acredito nisso. Três semanas de grupo, uma lista em PDF, e ninguém comprou carvão. Eu passo no mercado amanhã de manhã. Mas alguém me deve uma cerveja.' }
       ],
       bot: {
         typingMs: [700, 1800],
@@ -123,7 +126,8 @@ const DEFAULT_DATA = {
         { from: 'mae', t: -1358, type: 'text', text: 'Salada?' },
         { from: 'me', t: -1350, type: 'text', text: '...', status: 'read' },
         { from: 'mae', t: -1349, type: 'text', text: 'Eu sabia' },
-        { from: 'mae', t: -95, type: 'audio', dur: 71 },
+        { from: 'mae', t: -95, type: 'audio', voice: 'f2',
+          transcript: 'Meu filho, é sobre o aniversário da sua tia. Vai ser no sábado que vem, na casa dela, uma hora da tarde. Ela pediu pra você levar aquela sobremesa que você fez no Natal. E leva um casaco que lá é frio. Beijo, minha bênção.' },
         { from: 'mae', t: -94, type: 'text', text: 'Ouve o áudio quando puder, é sobre o aniversário da sua tia' }
       ],
       bot: {
@@ -158,7 +162,9 @@ const DEFAULT_DATA = {
         { from: 'sam', t: -540, type: 'doc', filename: 'release-notes-2.4.1.md', pages: 1, size: '9 kB' },
         { from: 'me', t: -520, type: 'text', text: 'vou revisar hoje à tarde', status: 'read' },
         { from: 'rafa', t: -300, type: 'text', text: 'alguém consegue olhar o PR #218? tá parado desde ontem', replyToIdx: 4 },
-        { from: 'lu', t: -60, type: 'text', text: 'reunião de alinhamento amanhã 10h, sala 3' }
+        { from: 'lu', t: -60, type: 'text', text: 'reunião de alinhamento amanhã 10h, sala 3' },
+        { from: 'sam', t: -40, type: 'audio', voice: 'm2',
+          transcript: 'Rápido: eu revisei o PR duzentos e dezoito. Tá bom no geral, só deixei dois comentários sobre o tratamento de erro. Fora isso pode subir.' }
       ],
       bot: {
         typingMs: [800, 2000],
@@ -190,6 +196,8 @@ const DEFAULT_DATA = {
         { from: 'teo', t: -240, type: 'text', text: 'e aí, mandou a chave?' },
         { from: 'me', t: -238, type: 'text', text: 'esqueci 😅', status: 'read' },
         { from: 'teo', t: -236, type: 'text', text: 'somos dois então' },
+        { from: 'teo', t: -60, type: 'audio', voice: 'm1',
+          transcript: 'Cara, desculpa o áudio, tô dirigindo. Só confirmando: sábado, uma da tarde, casa da Bia. Eu levo a churrasqueira e chego umas duas. Ou duas e meia.' },
         { from: 'teo', t: -8, type: 'text', text: 'sábado ainda tá de pé né?' }
       ],
       bot: {

@@ -3,11 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ZapClone — imitador de app de mensagens</title>
+<title>ZapClone</title>
 <meta name="description" content="Clone da interface de um app de mensagens, feito em HTML/CSS/JS puro. Conversas e contatos totalmente fictícios, com editor de roteiro embutido.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2300a884'/><path d='M16 7a9 9 0 0 0-7.8 13.5L7 25l4.6-1.2A9 9 0 1 0 16 7z' fill='%23fff'/></svg>">
 <link rel="stylesheet" href="styles.css">
+<script>
+/* define o tema antes da primeira pintura, para a tela não piscar branca */
+(function () {
+  try {
+    var d = document.documentElement;
+    var t = localStorage.getItem('zapclone.theme')
+         || d.getAttribute('data-theme')
+         || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    d.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
 </head>
 <body>
 
@@ -39,6 +51,7 @@
   <symbol id="i-reply" viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></symbol>
   <symbol id="i-warn" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
   <symbol id="i-group" viewBox="0 0 24 24"><path d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 2c-2.3 0-7 1.2-7 3.5V19h14v-2.5c0-2.3-4.7-3.5-7-3.5zm8 0c-.3 0-.6 0-1 .1 1.2.8 2 2 2 3.4V19h6v-2.5c0-2.3-4.7-3.5-7-3.5z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><path d="M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 1 1 6 0v2H9V6zm3 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></symbol>
   <symbol id="i-chat-art" viewBox="0 0 300 200">
     <rect x="40" y="30" width="150" height="34" rx="17" fill="currentColor" opacity=".22"/>
@@ -108,7 +121,7 @@
       </p>
     </div>
 
-    <div id="paneChat" hidden style="display:flex;flex-direction:column;height:100%;min-height:0">
+    <div class="pane-chat" id="paneChat" hidden>
       <header class="chat-head">
         <button class="icon-btn back" id="btnBack" aria-label="Voltar"><svg><use href="#i-back"></use></svg></button>
         <span class="avatar sm" id="headAvatar"></span>
@@ -122,7 +135,7 @@
 
       <div class="fiction-bar">
         <svg><use href="#i-warn"></use></svg>
-        <span>Conversa fictícia gerada pelo ZapClone — não é registro de nada nem representa pessoas reais.</span>
+        <span>Conversa fictícia gerada pelo ZapClone<span class="long"> — não é registro de nada nem representa pessoas reais</span>.</span>
       </div>
 
       <div class="inchat-search" id="findBar">
@@ -147,13 +160,21 @@
           <div class="q"><b id="replyWho"></b><span id="replyText"></span></div>
           <button class="icon-btn small" id="replyCancel" aria-label="Cancelar resposta"><svg><use href="#i-x"></use></svg></button>
         </div>
-        <div class="composer-row">
+        <div class="composer-row" id="composerRow">
           <button class="icon-btn" id="btnEmoji" title="Emojis" aria-label="Emojis"><svg><use href="#i-smile"></use></svg></button>
           <button class="icon-btn" id="btnAttach" title="Anexar" aria-label="Anexar"><svg><use href="#i-clip"></use></svg></button>
           <div class="input-wrap">
             <textarea id="input" rows="1" placeholder="Digite uma mensagem" aria-label="Mensagem"></textarea>
           </div>
-          <button class="icon-btn" id="btnSend" title="Enviar" aria-label="Enviar"><svg><use href="#i-mic"></use></svg></button>
+          <button class="icon-btn" id="btnSend" title="Gravar áudio" aria-label="Gravar áudio"><svg><use href="#i-mic"></use></svg></button>
+        </div>
+
+        <div class="rec-row" id="recRow">
+          <button class="icon-btn" id="recCancel" title="Descartar" aria-label="Descartar gravação"><svg><use href="#i-trash"></use></svg></button>
+          <span class="blip" aria-hidden="true"></span>
+          <span class="rt" id="recTime">0:00</span>
+          <span class="hint">Gravando… toque no avião para enviar</span>
+          <button class="icon-btn send-rec" id="recSend" title="Enviar áudio" aria-label="Enviar áudio"><svg><use href="#i-send"></use></svg></button>
         </div>
         <div class="emoji-pop" id="emojiPop"></div>
       </div>
