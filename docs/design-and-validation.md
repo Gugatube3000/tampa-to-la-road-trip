@@ -46,3 +46,5 @@ Quote requests currently prepare an email draft; they are not delivered to a ser
 ## Deployment
 
 Published to [novexexterior.vercel.app](https://novexexterior.vercel.app) through the authenticated Vercel CLI. The short `novex.vercel.app` alias was unavailable. The project uses clean URLs, local responsive assets, cache headers, canonical page URLs and a real photographic sharing image. Changes are pushed to the `design/novex-premium-mobile` branch and remain reviewable in [PR #1](https://github.com/Gugatube3000/tampa-to-la-road-trip/pull/1).
+
+The branded domain is configured as a project production domain and opens publicly without a Vercel login. Live verification returned 200 for all 11 public pages and sampled photo/font assets, with correct cache headers; an unknown route returned 404. Browser navigation to /team confirms all three Partner names and the supplied HQ/phone.

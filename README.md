@@ -56,4 +56,4 @@ The live site is [novexexterior.vercel.app](https://novexexterior.vercel.app), w
 
 From an authenticated Vercel CLI, link to the existing project with `vercel link --yes --project novex`, then deploy the committed source with `vercel --prod --yes`. Production deployment in this revision is explicit through the CLI; an automatic connection to the repository's older main branch was not added.
 
-After a later production deploy, point the branded alias to the deployment URL printed by the CLI: `vercel alias set <deployment-url> novexexterior.vercel.app`. The short `novex.vercel.app` alias was already in use, so this project uses the complete brand name without a hyphen.
+The branded domain is attached directly to the Vercel project and updates automatically with future production deployments. The short `novex.vercel.app` alias was already in use, so this project uses the complete brand name without a hyphen.
