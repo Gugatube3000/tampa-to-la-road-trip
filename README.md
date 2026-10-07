@@ -33,30 +33,41 @@ Shared files live in `assets/`:
 3. Save. The site is published at `https://<your-username>.github.io/<repository-name>/` within a minute or two.
 4. Optional: under **Custom domain**, add your own domain (for example `novexexterior.com`).
 
-## Adding photos
+## Photos
 
-Every image on the site has a **photo slot**. Upload a `.jpg` with the exact filename below into `assets/images/` and it appears automatically, covering the illustration in that spot. If a photo is missing, the illustration shows instead, so the site never looks broken.
+Real photos live in `assets/images/`. To swap one, upload a new file with the **same filename**; it updates everywhere it's used.
+
+| Filename | Where it appears |
+| --- | --- |
+| `photo-coastal-home.jpg` | Home page header, Sheets page header, gallery |
+| `photo-balustrade.jpg` | Trim Boards page header, Home photo band, Products page, gallery |
+| `photo-porch.jpg` | Cornerboards page header, Home "Performance", Products page, gallery |
+| `photo-sheet.jpg` | Sheets product card and overview |
+| `photo-cornerboard.jpg` | Cornerboards product card and overview |
+| `swatch-smooth.jpg`, `swatch-woodgrain.jpg` | Finish swatch chips |
+
+Some spots still show an illustration. Upload a `.jpg` with one of these names and it replaces the illustration automatically:
 
 | Filename | Where it appears | Suggested size |
 | --- | --- | --- |
-| `hero-home.jpg` | Home page, full-screen header (keep the house on the right; text sits on the left) | 2400 × 1400 |
-| `collection-trim.jpg` | Trim card on Home and About, the Products menu, the Products page | 1600 × 2000 (portrait) |
-| `collection-sheets.jpg` | Sheets card (same places) | 1600 × 2000 |
-| `collection-cornerboards.jpg` | Cornerboards card (same places) | 1600 × 2000 |
-| `hero-trim.jpg` | Trim Boards page header | 1600 × 1400 |
-| `hero-sheets.jpg` | Sheets page header | 1600 × 1400 |
-| `hero-cornerboards.jpg` | Cornerboards page header | 1600 × 1400 |
-| `feature-performance.jpg` | Home, "Engineered for the Northeast" | 1600 × 2000 |
-| `finish-smooth.jpg` | Smooth finish close-up | 1500 × 1000 |
-| `finish-woodgrain.jpg` | Woodgrain finish close-up | 1500 × 1000 |
+| `collection-trim.jpg` | Trim Boards card and overview (a studio shot of boards works best) | 1500 × 1000 |
 | `pros-detail.jpg` | Home "For Professionals" and the Professionals page | 1600 × 1600 |
-| `about-boston.jpg` | About page, wide banner | 2400 × 1030 |
-| `gallery-01.jpg` … `gallery-09.jpg` | Inspiration gallery; 01, 06 and 09 are the wide tiles. Home uses 02, 03, 05, 06, 09 | 1800 × 1200 (wide: 2400 × 1200) |
+| `about-boston.jpg` | About page banner | 2400 × 1030 |
+| `gallery-entry.jpg`, `gallery-gable.jpg`, `gallery-window.jpg`, `gallery-column.jpg`, `gallery-corner.jpg`, `gallery-eave.jpg`, `gallery-boston.jpg`, `gallery-colonial.jpg` | Inspiration gallery | 1800 × 1200 |
 
-Tips:
+Compress photos before uploading (for example with [squoosh.app](https://squoosh.app)), aiming for under 400 KB each. Gallery captions are in `inspiration.html`.
 
-- Compress photos before uploading (for example with [squoosh.app](https://squoosh.app)). Aim for under 400 KB each.
-- Gallery captions are in `inspiration.html`. Update them to describe your photos.
+## Motion
+
+The home page uses scroll-driven animation:
+
+- the header photo drifts as you scroll
+- a pinned "Built piece by piece" scene where each trim part flies onto the house
+- a stack of boards that separates to show each thickness
+- a scrolling product-name ticker
+- parallax photos
+
+All of it is switched off automatically for visitors who have "reduce motion" turned on in their device settings.
 
 ## Before going live
 
@@ -65,7 +76,8 @@ Please check and replace these placeholders:
 - **Phone:** `(617) 555-0142`. Search all `.html` files for `555-0142` and `+16175550142`.
 - **Email:** `hello@novexexterior.com`. Search all `.html` files and `assets/js/main.js`.
 - **Hours:** `Mon–Fri 7:00 am – 4:30 pm`, in the footer and on the contact page.
-- **Product sizes and availability tables:** these show typical industry sizes for PVC trim, sheets and cornerboards. Match them to what you actually stock.
+- **Product sizes and availability tables:** these follow the size charts from the AZEK pages you provided. Match them to what you actually stock.
+- **Product claims:** for example protective film, ground-contact rating and UV protection. Keep only what applies to the products you sell. The site deliberately makes no warranty promises.
 - **Service claims:** for example delivery area, trade pricing and samples. Make sure they reflect what you offer.
 
 ## Quote form
