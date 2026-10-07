@@ -52,6 +52,8 @@ The refresh installed and used [Anthropic frontend-design](https://github.com/an
 
 ## Vercel deployment
 
-The Vercel project is `novex`. `vercel.json` uses a static framework preset and the repository root as its output, with clean page URLs such as `/team`. There is no build command. Fonts and images receive cache headers; HTML is revalidated by the host. `.vercelignore` excludes documentation and unused illustration assets from deployment, while `.gitignore` keeps local Vercel connection files out of Git.
+The live site is [novexexterior.vercel.app](https://novexexterior.vercel.app), with the partner page at [/team](https://novexexterior.vercel.app/team). The Vercel project is `novex`. `vercel.json` uses a static framework preset and the repository root as its output, with clean page URLs such as `/team`. There is no build command. Fonts and images receive cache headers; HTML is revalidated by the host. `.vercelignore` excludes documentation and unused illustration assets from deployment, while `.gitignore` keeps local Vercel connection files out of Git.
 
 From an authenticated Vercel CLI, link to the existing project with `vercel link --yes --project novex`, then deploy the committed source with `vercel --prod --yes`. Production deployment in this revision is explicit through the CLI; an automatic connection to the repository's older main branch was not added.
+
+After a later production deploy, point the branded alias to the deployment URL printed by the CLI: `vercel alias set <deployment-url> novexexterior.vercel.app`. The short `novex.vercel.app` alias was already in use, so this project uses the complete brand name without a hyphen.

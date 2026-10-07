@@ -42,3 +42,7 @@ The final audits report no warnings, forced reflow or failed accessibility check
 ## Existing operational details
 
 Quote requests currently prepare an email draft; they are not delivered to a server until a receiving endpoint is configured. Confirm that the existing email destination is monitored. The inherited product-size tables were retained; verify actual stocked dimensions, finishes and availability before publishing. These operational items are documented in [README](../README.md).
+
+## Deployment
+
+Published to [novexexterior.vercel.app](https://novexexterior.vercel.app) through the authenticated Vercel CLI. The short `novex.vercel.app` alias was unavailable. The project uses clean URLs, local responsive assets, cache headers, canonical page URLs and a real photographic sharing image. Changes are pushed to the `design/novex-premium-mobile` branch and remain reviewable in [PR #1](https://github.com/Gugatube3000/tampa-to-la-road-trip/pull/1).
