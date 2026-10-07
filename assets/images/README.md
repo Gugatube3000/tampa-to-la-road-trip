@@ -23,3 +23,9 @@ Photographs were cropped/resized and compressed locally; architectural content w
 4. Update the public credits and this table; verify paths, gallery views and slow-network transfers. Prioritize the hero and lazy-load later photography.
 
 Earlier `photo-*.jpg` and `swatch-*.jpg` files remain as original references. Active architectural photography uses `real-*`; functional finish samples are labeled illustrative.
+
+## Additional real photography
+
+Eight distinct families were added for the mobile revision: `real-modern-farmhouse`, `real-colonial-garden`, `real-veranda`, `real-maine-entry`, `real-dormer`, `real-window-box`, `real-shutter-detail`, `real-heritage`. Each includes responsive WebP variants at 320, 480, 800, 1200 and 1800px; original authors and source links are recorded in [photo-sources](../../docs/photo-sources.md). The main homepage uses a different photograph in every visual section.
+
+All fourteen families now include a 320px WebP under 22KB for compact phone cards and navigation thumbnails. The 480/800px variants are under 70KB.

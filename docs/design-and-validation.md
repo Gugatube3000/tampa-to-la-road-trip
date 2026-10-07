@@ -5,10 +5,10 @@ The former home page pinned a six-stage illustrated house assembly for 420 viewp
 ## Design decisions
 
 - Chalk, evergreen and bronze reference painted trim, landscape and enduring architectural details. Libre Caslon Display and Manrope separate editorial character from practical product information.
-- The desktop hero presents the house without covering it with marketing copy. The mobile hero uses a complete photograph, concise proposition and two clear actions. Products start within one screen at the reviewed 390px width.
-- Established projects across New England anchors the approved legacy message. No company age, project count, warranty, review score or certification was invented.
-- Six licensed photographic families illustrate architecture. Captions and [photography credits](../photography.html) distinguish inspiration from documented Novex installations. [Source records](photo-sources.md) retain original photographer and license links.
-- Native scroll and lightweight CSS/IntersectionObserver replace the pinned sequence, word splitting, board-stack animation and perpetual marquee. Mobile, reduced motion, data saver and slow connections disable decorative movement. Optional desktop photo drift is limited to 12px and active only while visible, with no idle animation loop.
+- The desktop hero presents the house without covering it with marketing copy. The mobile hero uses a complete photograph, concise proposition and two clear actions. Compact product rows pair photographs with useful descriptions and shorten the path to product information.
+- New England's architectural character informs the brand language. No company age, project history, project count, warranty, review score or certification was invented. The Team page names the user-provided partners Jonathan Deoliveira, Amanda Godoy and Gustavo Oliveira; their role is Partner. Contact details use the supplied +1 781 628 8896 phone number and HQ: Boston, MA.
+- Fourteen licensed photographic families illustrate architecture, with six distinct photographs on the homepage. Captions and [photography credits](../photography.html) distinguish inspiration from documented Novex installations. [Source records](photo-sources.md) retain original photographer and license links.
+- Native scroll and lightweight CSS/IntersectionObserver replace the pinned sequence, word splitting, board-stack animation and perpetual marquee. Short one-shot reveals work on phones and desktops; reduced motion, data saver and slow connections keep content static. Startup performs no synchronous geometry reads: the browser's observer entries initialize reveal states. Initially visible content stays readable. Optional desktop photo drift is limited to 12px and active only while visible, with no idle animation loop.
 - All navigation, product tabs, filters and gallery controls use semantic elements. Menus and the photo viewer isolate background content, trap focus, close on Escape and restore focus. Core navigation/specifications remain accessible without JavaScript.
 
 ## Research used
@@ -17,11 +17,11 @@ The former home page pinned a six-stage illustrated house assembly for 420 viewp
 
 ## Verification on October 6, 2026
 
-- Browser review: 11 pages at 320, 390, 768, 1024 and 1440px widths (55 combinations), with no horizontal overflow or observed broken images.
-- Independent static audit: 11 pages, 945 local references and 63 responsive image elements. No missing files, broken local anchors, duplicate IDs, unnamed controls or invalid ARIA targets.
+- Browser review: 12 pages at 320, 390, 768, 1024 and 1440px widths (60 combinations), with no horizontal overflow or observed broken images.
+- Independent static audit: 12 pages, 1,122 local references and 67 responsive image elements. No missing files, broken local anchors, duplicate IDs, unnamed controls or invalid ARIA targets.
 - Interaction tests: mobile menu/focus/Escape; detail selection and synchronized hotspots; gallery filter/viewer/next/Escape/focus return; product tabs and End-key navigation; invalid quote fields and first-error focus.
 - JavaScript syntax and Git whitespace checks passed.
-- All 24 responsive WebP files decode; 480/800px files are under 70KB and every WebP is under 220KB. The home family is approximately 38/69/144/210KB at 480/800/1200/1800px. Fonts are local WOFF2 files, approximately 49KB combined, with swap and preload.
+- All 70 responsive WebP files decode. Each of the 14 families has 320, 480, 800, 1200 and 1800px variants. Every 320px file is below 22KB; the largest mobile rendition is 69,874 bytes, and the largest rendition overall is 249,954 bytes. Fonts are local WOFF2 files, approximately 49KB combined, with swap and preload.
 
 Lighthouse 13.5.0 measured a local static server. Mobile used simulated 150ms/1.6Mbps networking and 4× CPU slowdown. These lab measurements diagnose this implementation; they do not establish real-user Core Web Vitals after deployment.
 
@@ -31,11 +31,13 @@ Lighthouse 13.5.0 measured a local static server. Mobile used simulated 150ms/1.
 | Accessibility | 100 | 100 |
 | Best practices | 100 | 100 |
 | SEO | 100 | 100 |
-| Largest contentful paint | 2.49s | 0.64s |
-| Total blocking time | 0ms | 8.5ms |
-| Cumulative layout shift | 0 | 0.004 |
+| First contentful paint | 1.51s | 0.36s |
+| Largest contentful paint | 2.49s | 0.61s |
+| Total blocking time | 0ms | 0ms |
+| Cumulative layout shift | 0 | 0 |
+| Initial transferred resources | 428KiB | 722KiB |
 
-The initial mobile audit scored 85. Removing interleaved layout reads/writes raised it to 95; preloading the display font raised it to 97. The final audit reports no warnings or failed accessibility checks.
+The final audits report no warnings, forced reflow or failed accessibility checks. Mobile product rows select the new 320px photographs at roughly 21KB each, while the hero retains its 800px source. Compared with the same revised page before the smaller renditions, the mobile audit transferred approximately 65KiB less data. Reveal initialization uses observer-supplied rectangles rather than blocking the first render with geometry queries.
 
 ## Existing operational details
 

@@ -16,7 +16,8 @@
   var revealElements = Array.from(doc.querySelectorAll('[data-reveal]'));
   var photos = Array.from(doc.querySelectorAll('[data-parallax]'));
   var visiblePhotos = new Set();
-  var motionEnabled = false;
+  var revealsEnabled = false;
+  var parallaxEnabled = false;
   var footerVisible = false;
   var menuOpen = false;
   var lightboxOpen = false;
@@ -26,11 +27,11 @@
   var savedOverflow = '';
 
   // Content starts visible. Effects are opt-in, after this deferred script is ready.
-  root.classList.remove('motion', 'js');
+  root.classList.remove('motion', 'photo-motion', 'js');
 
-  function canAnimate() {
+  function canReveal() {
     var slowNetwork = connection && (connection.saveData || /^(slow-2g|2g|3g)$/.test(connection.effectiveType || ''));
-    return desktopMotion.matches && !reducedMotion.matches && !slowNetwork && 'IntersectionObserver' in window;
+    return !reducedMotion.matches && !slowNetwork && 'IntersectionObserver' in window;
   }
 
   function scheduleFrame() {
@@ -44,7 +45,7 @@
     var y = window.scrollY;
     var viewportHeight = window.innerHeight;
     var photoUpdates = [];
-    if (motionEnabled && !doc.hidden) {
+    if (parallaxEnabled && !doc.hidden) {
       visiblePhotos.forEach(function (photo) {
         var rect = photo.getBoundingClientRect();
         var center = rect.top + rect.height / 2 - viewportHeight / 2;
@@ -68,43 +69,48 @@
   }
 
   var observer = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
+    var scrollStateChanged = false;
     entries.forEach(function (entry) {
       var target = entry.target;
-      if (target === footer) footerVisible = entry.isIntersecting;
-      if (target.hasAttribute('data-reveal') && entry.isIntersecting) {
-        target.classList.add('is-in');
-        target.classList.remove('reveal-ready');
-        if (!photos.includes(target) && target !== footer) observer.unobserve(target);
+      if (target === footer && footerVisible !== entry.isIntersecting) {
+        footerVisible = entry.isIntersecting;
+        scrollStateChanged = true;
+      }
+      if (target.hasAttribute('data-reveal')) {
+        // These rectangles are supplied by the browser's observer pass.
+        // No synchronous startup layout reads, including on mobile.
+        var aboveViewportBottom = !entry.rootBounds || entry.boundingClientRect.top < entry.rootBounds.bottom;
+        if (!revealsEnabled || target.classList.contains('is-in') || entry.isIntersecting || aboveViewportBottom) {
+          target.classList.add('is-in');
+          target.classList.remove('reveal-ready');
+          if (!photos.includes(target) && target !== footer) observer.unobserve(target);
+        } else {
+          target.classList.add('reveal-ready');
+        }
       }
       if (photos.includes(target)) {
         if (entry.isIntersecting) visiblePhotos.add(target);
         else visiblePhotos.delete(target);
+        if (parallaxEnabled) scrollStateChanged = true;
       }
     });
-    scheduleFrame();
+    // Reveals run as CSS transitions and need no extra scroll work.
+    if (scrollStateChanged) scheduleFrame();
   }, { threshold: 0.08 }) : null;
 
   function configureMotion() {
-    motionEnabled = canAnimate();
-    var alreadyVisible = [];
-    // Phones and no-motion preferences need no geometry work at all.
-    if (motionEnabled) {
-      var viewportHeight = window.innerHeight;
-      alreadyVisible = revealElements.map(function (element) {
-        return element.classList.contains('is-in') || element.getBoundingClientRect().top < viewportHeight;
-      });
-    }
-    root.classList.toggle('motion', motionEnabled);
-    revealElements.forEach(function (element, index) {
-      if (!motionEnabled || alreadyVisible[index]) {
+    revealsEnabled = canReveal();
+    parallaxEnabled = revealsEnabled && desktopMotion.matches;
+    root.classList.toggle('motion', revealsEnabled);
+    root.classList.toggle('photo-motion', parallaxEnabled);
+    revealElements.forEach(function (element) {
+      if (!revealsEnabled || element.classList.contains('is-in')) {
         element.classList.add('is-in');
         element.classList.remove('reveal-ready');
         if (observer && !photos.includes(element) && element !== footer) observer.unobserve(element);
-      } else {
-        element.classList.add('reveal-ready');
       }
     });
-    if (!motionEnabled) photos.forEach(function (photo) { photo.style.removeProperty('--photo-drift'); });
+    if (!parallaxEnabled) photos.forEach(function (photo) { photo.style.removeProperty('--photo-drift'); });
     scheduleFrame();
   }
 
@@ -184,8 +190,8 @@
       menuOpen = true;
       body.classList.add('menu-open');
       isolateBackground([menu, menuToggle]);
-      var firstLink = menu.querySelector('a[href]');
-      if (firstLink) firstLink.focus();
+      var firstControl = menu.querySelector('[data-menu-close], a[href]');
+      if (firstControl) firstControl.focus();
     } else {
       menuOpen = false;
       body.classList.remove('menu-open');
@@ -208,12 +214,13 @@
     menu.setAttribute('aria-hidden', 'true');
     menuToggle.addEventListener('click', function () { setMenu(!menuOpen); });
     menu.addEventListener('click', function (event) {
-      if (event.target.closest('a[href]')) setMenu(false, false);
+      if (event.target.closest('[data-menu-close]')) setMenu(false);
+      else if (event.target.closest('a[href]')) setMenu(false, false);
     });
     doc.addEventListener('keydown', function (event) {
       if (!menuOpen) return;
       if (event.key === 'Escape') { event.preventDefault(); setMenu(false); }
-      else trapFocus(event, [menuToggle, menu]);
+      else trapFocus(event, [menu]);
     });
   }
 
