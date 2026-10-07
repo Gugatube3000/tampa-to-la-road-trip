@@ -1,6 +1,6 @@
-# Novex Exterior
+# Novex Building Materials
 
-A static website for Novex Exterior's cellular PVC trim boards, sheets and one-piece cornerboards. Plain HTML, CSS and JavaScript; no build step, package install or client framework. Serve the repository root with a static web host, including GitHub Pages.
+A static website for Novex Building Materials' cellular PVC trim boards, sheets and one-piece cornerboards. Plain HTML, CSS and JavaScript; no build step, package install or client framework. Serve the repository root with a static web host, including GitHub Pages.
 
 For a local preview, run `python -m http.server 8000` from the repository root and open [localhost:8000](http://localhost:8000).
 
@@ -17,7 +17,8 @@ For a local preview, run `python -m http.server 8000` from the repository root a
 - `assets/css/styles.css`: shared layout/components and local fonts. `assets/css/premium.css`: architectural presentation, responsive refinements and motion preferences.
 - `assets/js/main.js`: menu, specification tabs, photographic detail explorer, gallery, scroll effects and quote form.
 - `assets/images/`: fourteen real-photo families with 320, 480, 800, 1200 and 1800px WebP variants. HTML provides `srcset`, `sizes` and dimensions, prioritizes the hero and lazy-loads later images. The smaller variants support compact phone product cards without downloading desktop images. See [image sources and maintenance](assets/images/README.md).
-- `assets/fonts/`: self-hosted **Libre Caslon Display** and **Manrope**, with `font-display: swap` and license files.
+- `assets/fonts/`: self-hosted **Montserrat** variable Latin font (400–700), with `font-display: swap`, preload, and its SIL license. Headlines use 600, body 400, and labels 500.
+- `assets/brand/`: official logo vectors extracted faithfully from the supplied October 2026 NOVEX Brand Guidelines. Primary and reverse lockups include the required clear space; the mobile header shows a 123px-wide wordmark, above the 120px minimum. The native symbol is used for browser and Apple icons.
 
 ## Experience
 
