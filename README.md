@@ -1,91 +1,60 @@
-# Novex Exterior — Website
+# Novex Building Materials
 
-The marketing website for **Novex Exterior**, a Boston, MA supplier of premium cellular PVC trim boards, sheets and one-piece cornerboards.
+A static website for Novex Building Materials' cellular PVC trim boards, sheets and one-piece cornerboards. Plain HTML, CSS and JavaScript; no build step, package install or client framework. Serve the repository root with a static web host, including GitHub Pages.
 
-It's a static site: plain HTML, CSS and JavaScript with no build step. That means it runs on GitHub Pages, Netlify or any web host.
+For a local preview, run `python -m http.server 8000` from the repository root and open [localhost:8000](http://localhost:8000).
 
-## Pages
+## Project structure
 
-| Page | File |
+| Pages | Files |
 | --- | --- |
-| Home | `index.html` |
-| Products overview | `products.html` |
-| Trim Boards | `trim.html` |
-| Sheets | `sheets.html` |
-| Cornerboards | `cornerboards.html` |
-| Inspiration gallery | `inspiration.html` |
-| Professionals / trade program | `professionals.html` |
-| About | `about.html` |
-| Contact & quote request | `contact.html` |
-| Not found | `404.html` |
+| Home and product comparison | `index.html`, `products.html` |
+| Product specifications | `trim.html`, `sheets.html`, `cornerboards.html` |
+| Inspiration and professional resources | `inspiration.html`, `professionals.html` |
+| Story, partners and contact | `about.html`, `team.html`, `contact.html` |
+| Photography credits and not found | `photography.html`, `404.html` |
 
-Shared files live in `assets/`:
+- `assets/css/styles.css`: shared layout/components and local fonts. `assets/css/premium.css`: architectural presentation, responsive refinements and motion preferences.
+- `assets/js/main.js`: menu, specification tabs, photographic detail explorer, gallery, scroll effects and quote form.
+- `assets/images/`: fourteen real-photo families with 320, 480, 800, 1200 and 1800px WebP variants. HTML provides `srcset`, `sizes` and dimensions, prioritizes the hero and lazy-loads later images. The smaller variants support compact phone product cards without downloading desktop images. See [image sources and maintenance](assets/images/README.md).
+- `assets/fonts/`: self-hosted **Montserrat** variable Latin font (400–700), with `font-display: swap`, preload, and its SIL license. Headlines use 600, body 400, and labels 500.
+- `assets/brand/`: official logo vectors extracted faithfully from the supplied October 2026 NOVEX Brand Guidelines. Primary and reverse lockups include the required clear space; the mobile header shows a 123px-wide wordmark, above the 120px minimum. The native symbol is used for browser and Apple icons.
 
-- `assets/css/styles.css`: all styles (colors and fonts are set at the top in `:root`)
-- `assets/js/main.js`: menu, scroll effects, interactive "anatomy" diagram, gallery lightbox and quote form
-- `assets/art/`: the architectural illustrations used throughout the site
-- `assets/images/`: where your photos go (see below)
+## Experience
 
-## Publish on GitHub Pages
+Native scrolling brings visitors directly to compact product rows on phones. The home detail explorer has three named buttons and photo hotspots for trim, sheets and cornerboard applications. The pinned assembly sequence and continuous marquee were removed. Short, one-shot scroll reveals work on phones and desktops; optional photo drift stays on desktops with a fine pointer. All effects respect reduced motion and slow-network/data-saving preferences, with no permanent animation loop or synchronous startup geometry reads.
 
-1. On GitHub, open the repository's **Settings → Pages**.
-2. Under **Build and deployment**, choose **Deploy from a branch**, then select `main` and `/ (root)`.
-3. Save. The site is published at `https://<your-username>.github.io/<repository-name>/` within a minute or two.
-4. Optional: under **Custom domain**, add your own domain (for example `novexexterior.com`).
+Semantic navigation, tables, tabs, gallery and forms support keyboard use and visible focus. Menu/gallery provide Escape, focus return and background isolation; tabs support arrow keys, Home and End. A no-JavaScript navigation fallback, visible specifications and direct product/image links keep core content available.
 
-## Photos
+Photography is labeled **architectural inspiration** and credited on [photography.html](photography.html). It does not establish that the pictured buildings use Novex products. Finish illustrations are labeled illustrative. Dependable brand copy avoids unsupported founding dates, company-age metrics and warranty promises. The Team page identifies Jonathan Deoliveira, Amanda Godoy and Gustavo Oliveira as Partners, using typographic initials rather than personal portraits or invented biographies.
 
-Real photos live in `assets/images/`. To swap one, upload a new file with the **same filename**; it updates everywhere it's used.
+## Quotes and production setup
 
-| Filename | Where it appears |
-| --- | --- |
-| `photo-coastal-home.jpg` | Home page header, Sheets page header, gallery |
-| `photo-balustrade.jpg` | Trim Boards page header, Home photo band, Products page, gallery |
-| `photo-porch.jpg` | Cornerboards page header, Home "Performance", Products page, gallery |
-| `photo-sheet.jpg` | Sheets product card and overview |
-| `photo-cornerboard.jpg` | Cornerboards product card and overview |
-| `swatch-smooth.jpg`, `swatch-woodgrain.jpg` | Finish swatch chips |
+The current empty `data-endpoint` makes the contact form validate name/email and open an email draft to `hello@novexexterior.com`. The visitor reviews and sends it in their email app. The page explains this and offers direct email access.
 
-Some spots still show an illustration. Upload a `.jpg` with one of these names and it replaces the illustration automatically:
+A future `data-endpoint` must accept a `FormData` POST and return a successful HTTP response. Only then does the script show a sent confirmation; errors preserve entered details and offer an email draft.
 
-| Filename | Where it appears | Suggested size |
-| --- | --- | --- |
-| `collection-trim.jpg` | Trim Boards card and overview (a studio shot of boards works best) | 1500 × 1000 |
-| `pros-detail.jpg` | Home "For Professionals" and the Professionals page | 1600 × 1600 |
-| `about-boston.jpg` | About page banner | 2400 × 1030 |
-| `gallery-entry.jpg`, `gallery-gable.jpg`, `gallery-window.jpg`, `gallery-column.jpg`, `gallery-corner.jpg`, `gallery-eave.jpg`, `gallery-boston.jpg`, `gallery-colonial.jpg` | Inspiration gallery | 1800 × 1200 |
+Before production, confirm the email is correct and monitored. Check the original project's inherited catalog dimensions, finishes and availability against Novex's actual products; those tables were originally adapted from AZEK references. Confirm pricing, sample and delivery offerings. The supplied contact number is **+1 781 628 8896**, linked with `tel:+17816288896`, and the headquarters is shown as **HQ: Boston, MA**. Placeholder business hours have been removed.
 
-Compress photos before uploading (for example with [squoosh.app](https://squoosh.app)), aiming for under 400 KB each. Gallery captions are in `inspiration.html`.
+## Research and skills
 
-## Motion
+[AZEK](https://azekexteriors.com/), [James Hardie](https://www.jameshardie.com/) and [Kebony](https://us.kebony.com/) informed product discovery, inquiry paths and professional resources. Novex uses real architecture, plain application language and a shorter route to products.
 
-The home page uses scroll-driven animation:
+The refresh installed and used [Anthropic frontend-design](https://github.com/anthropics/skills/blob/683bc88e56f3e09ba94f7055977f3d3aa499f202/skills/frontend-design/SKILL.md) for intentional visual design and [Vercel web-design-guidelines](https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md) for interface review. GSAP, Lenis and Motion were reviewed; native CSS/IntersectionObserver provides the required behavior without another runtime dependency. Performance decisions follow [Google animation](https://web.dev/articles/animations-guide), [LCP](https://web.dev/articles/optimize-lcp) and [MDN reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) guidance.
 
-- the header photo drifts as you scroll
-- a pinned "Built piece by piece" scene where each trim part flies onto the house
-- a stack of boards that separates to show each thickness
-- a scrolling product-name ticker
-- parallax photos
+## Manual checks after changes
 
-All of it is switched off automatically for visitors who have "reduce motion" turned on in their device settings.
+- At 360px/390px phone widths: clear hero actions, useful photo crops, comfortable controls and no sideways page scrolling.
+- Keyboard: skip link, menu/Escape/focus return, specification tabs, filters and gallery controls.
+- Reduced motion and JavaScript disabled: core navigation, content and specifications remain available.
+- Slow network/CPU: hero loading, chosen image variants, layout stability and scroll responsiveness.
+- Quote form: invalid-field feedback and valid email draft contents; test acknowledged delivery separately if a POST endpoint is configured.
+- Changed imagery: captions match, credits remain correct and gallery/full-image links work. Re-measure performance after material asset or interaction changes.
 
-## Before going live
+## Vercel deployment
 
-Please check and replace these placeholders:
+The live site is [novexexterior.vercel.app](https://novexexterior.vercel.app), with the partner page at [/team](https://novexexterior.vercel.app/team). The Vercel project is `novex`. `vercel.json` uses a static framework preset and the repository root as its output, with clean page URLs such as `/team`. There is no build command. Fonts and images receive cache headers; HTML is revalidated by the host. `.vercelignore` excludes documentation and unused illustration assets from deployment, while `.gitignore` keeps local Vercel connection files out of Git.
 
-- **Phone:** `(617) 555-0142`. Search all `.html` files for `555-0142` and `+16175550142`.
-- **Email:** `hello@novexexterior.com`. Search all `.html` files and `assets/js/main.js`.
-- **Hours:** `Mon–Fri 7:00 am – 4:30 pm`, in the footer and on the contact page.
-- **Product sizes and availability tables:** these follow the size charts from the AZEK pages you provided. Match them to what you actually stock.
-- **Product claims:** for example protective film, ground-contact rating and UV protection. Keep only what applies to the products you sell. The site deliberately makes no warranty promises.
-- **Service claims:** for example delivery area, trade pricing and samples. Make sure they reflect what you offer.
+From an authenticated Vercel CLI, link to the existing project with `vercel link --yes --project novex`, then deploy the committed source with `vercel --prod --yes`. Production deployment in this revision is explicit through the CLI; an automatic connection to the repository's older main branch was not added.
 
-## Quote form
-
-The form on `contact.html` works with no setup. When someone submits it, their email app opens with a pre-filled request addressed to you.
-
-To receive submissions directly instead, create a free form endpoint, for example at [Formspree](https://formspree.io). Then paste its URL into the form's `data-endpoint` attribute in `contact.html`:
-
-```html
-<form class="form" data-quote-form data-endpoint="https://formspree.io/f/yourFormId" novalidate>
-```
+The branded domain is attached directly to the Vercel project and updates automatically with future production deployments. The short `novex.vercel.app` alias was already in use, so this project uses the complete brand name without a hyphen.
